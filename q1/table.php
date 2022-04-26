@@ -1,172 +1,80 @@
-<html>
-<head>
-    <title>Assignment 2, Q1</title>
-</head>
+<html lang="en-us">
+    <head>
+        <title>Table Operations</title>
+    </head>
 
-<body>
+    <body>
+    <?php
+    include_once "table.php";
+    echo "Here is an initialized table:";
+    $test = new Table(array("a", "b", "c", "d"));
+    $test->addRow(array(1, 2, 3, 4));
+    $test->addRow(array(5, 6, 7, 8));
+    $test->addRow(array(1, 5, 4, 8));
+    $test->addRow(array(2, 6, 3, 7));
+    $test->output();
+    echo "You can manipulate this table by following these instructions:"."</br>";
+    ?>
+    <div>
+        <p>
+        <b>To Add Row:</b><br>
+            Enter elements to be added in Box1 separated by comma. If you want to add elements 2, 4, 9 and 7, you
+            write 2,4,9,7 in Box1.
+        </p>
+        <p>
+            <b>To Add Associative Row:</b><br>
+            Enter elements to be added in Box1 separated by comma and the heading names in Box2 in the sequence
+            corresponding to the numbers added in Box1.<br> If you want to add elements 2 under heading "a" and 4 added
+            under "b", you should add 2,4 in Box1 and a,b in Box2.
+        </p>
+        <p>
+            <b>To Remove Row</b><br>
+            Enter elements of the row to be deleted in Box1 separated by comma. If you want to delete the row with
+            elements 2, 4, 9 and 7, you write 2,4,9,7 in Box1.
+        </p>
+        <p>
+            <b>To Remove Associative Row</b><br>
+            Enter elements of the row to be deleted in Box1 separated by comma and the heading names in Box2 in the sequence
+            corresponding to the numbers written in Box1.
+        </p>
+        <p>
+            <b>To Add Column</b><br>
+            Enter the name of the new heading in <b>Box2</b> and optionally, enter the value you wish to assign to that
+            column in Box1
+        </p>
+        <p>
+            <b>To Remove Column</b><br>
+            Enter the heading name of the column to be removed in <b>Box2</b>
+        </p>
+        <p>
+            <b>To Rename Column</b><br>
+            Enter the names of the old heading and new headings separated by a colon(:) in Box2. If you want to
+            rename column "a" to "z" and "d" to "y" you need to add a,d:z,y in Box2.
+        </p>
+        <p>
+            Once you've added the required information in the given boxes, select the appropriate option from the
+            drop-down list and click on 'submit query'<br>
+            <b>Do not add spaces preceding or following the commas or colon.<b>
+        </p>
 
-<h1>Question 1</h1>
-
-<?php
-    class Table {
-    var $table_array = array();
-    var $headers = array();
-    var $cols;
-    function Table ( $headers ) {
-        $this->headers = $headers;
-        $this->cols = count ($headers);
-    }
-
-    function addRow ( $row ) {
-        if ( count ($row) != $this->cols )
-            return false;
-        array_push ( $this->table_array, $row );
-        return true;
-    }
-
-    function addCol ( $colName, $val ) {
-        array_push($this->headers, $colName);
-        if ($val == "")
-            $val = NULL;
-        for($i = 0; $i < count($this->table_array); $i++) {
-            array_push($this->table_array[$i], $val);
-        }
-    }
-
-    function addRowAssocArray ( $row_assoc ) {
-        $row = array();
-        foreach ( $this->headers as $header ) {
-            if ( ! isset ($row_assoc[$header] ) )
-                $row_assoc[$header] = "";
-            $row[] = $row_assoc[$header];
-        }
-        array_push($this->table_array, $row);
-        return true;
-    }
-
-    function rmRow ( $theRow ) {
-        $rowExists = false;
-        $count = 0;
-        foreach ( $this->table_array as $row ) {
-            if ($theRow == $row) {
-                $rowExists = true;
-                break;
-            }
-            $count++;
-        }
-
-        if($rowExists) {
-            array_splice($this->table_array, $count, 1);
-        } else {
-            print "row not found in table\n";
-        }
-    }
-
-    function rmCol($colName) {
-        $count = 0;
-        foreach($this->headers as $header) {
-            if ($header == $colName)
-                break;
-            $count++;
-        }
-        unset($this->headers[$count]);
-        for($i = 0; $i < count($this->table_array); $i++) {
-            unset($this->table_array[$i][$count]);
-        }
-    }
-
-    function rmRowAssocArray ( $theRow ) {
-        $rowExists = false;
-        $count = 0;
-        foreach ( $this->table_array as $row ) {
-            if ($theRow === $row) {
-                $rowExists = true;
-                break;
-            }
-            $count++;
-        }
-
-        if($rowExists) {
-            unset($this->table_array[$count]);
-        } else {
-            print "row not found in table\n";
-        }
-    }
-
-    function renameCol($oldName, $newName) {
-        $count = 0;
-        foreach($this->headers as $header) {
-            if ($header == $oldName) {
-                break;
-            }
-            $count++;
-        }
-        $this->headers[$count] = $newName;
-    }
-
-    function output ( ) {
-        print "<pre>";
-        foreach ( $this->headers as $header )
-            print "<b>$header</b> ";
-        print "\n";
-        foreach ( $this->table_array as $y ) {
-            foreach ( $y as $xcell )
-                print "$xcell ";
-            print "\n";
-        }
-        print "</pre>";
-    }
-}
-
-//$test = new table ( array ("a", "b", "c") );
-//$test->addRow ( array (1, 2, 3 ) );
-//$test->addRow ( array (5, 6, 7 ) );
-//$test->addRowAssocArray ( array (b=>0, a=>6, c=>3 ) );
-//$test->output();
-//print "\n\nremoving a row\n\n";
-//$test->rmRow ( array (1, 2, 3 ));
-//$test->output();
-//print "\n\nadding a column\n\n";
-//$test->addCol("d", 13);
-//$test->output();
-//print "\n\nremoving a column\n\n";
-//$test->rmCol("b");
-//$test->output();
-////print "\n\nremoving a associative row\n\n";
-////$test->rmRowAssocArray( array (b=>0, a=>6, c=>3 ) );
-//print "\n\nrenaming a column\n\n";
-//$test->renameCol("a", "z");
-//$test->output();
-
-if(isset($_POST['button1'])) {
-    echo "This is Button1 that is selected";
-}
-if(isset($_POST['button2'])) {
-    echo "This is Button2 that is selected";
-}
-?>
-
-<!--
-    <p><input type=text name=field_keyword value=""></p>
-    <TABLE CELLSPACING="0" CELLPADDING="0" width="45%" bgcolor="#ccffff">
-        <tr>
-            <td> <input type=button value="Add Row" onClick="top.main.location='http://newfirebird.cs.txstate.edu/~wp01/cgi-bin/home.pl'"></td>
-            <td> <input type=button value="Remove Row" onClick="top.main.location='/~wp01/demo/proc/unix-version/html/job_search.html'"></td>
-            <td> <input type=button value="Add Column" onClick="top.main.location='/~wp01/demo/proc/unix-version/html/employer_login.html'"></td>
-            <td> <input type=button value="Remove Column" onClick="top.main.location='/~wp01/demo/proc/unix-version/html/employer_login.html'"></td>
-            <td> <input type=button value="Rename Column" onClick="top.main.location='/~wp01/demo/proc/unix-version/html/member_login.html'"></td>
-        </tr>
-    </table>
--->
-<br></br>
-
-<form action="foobar_submit.php" method="post">
-    <input name="my_html_input_tag"  value="PILLS HERE"/>
-
-    <input type="submit" name="my_form_submit_button" 
-           value="Click here for penguins"/>
-
+    </div>
+    <form name="operations_table" action="process.html" method="post" autocomplete="off">
+        <input type="text" name="box1" placeholder="Box 1" size="50">
+        <input type="text" name="box2" placeholder="Box 2" size="50">
+        <select name="operation">
+            <option name="none" value="0">-- Select an Operation --</option>
+            <option name="addRow" value="1">Add Row</option>
+            <option name="addAssocRow" value="2">Add Associative Row </option>
+            <option name="rmRow" value="3">Remove Row</option>
+            <option name="rmAssocRow" value="4">Remove Associative Row</option>
+            <option name="addCol" value="5">Add Column</option>
+            <option name="rmCol" value="6">Remove Column</option>
+            <option name="renameCol" value="7">Rename Column</option>
+        </select>
+        <br>
+        <br>
+        <button type="submit" name="submit" value="submit">Submit Query</button>
     </form>
 
-</body>
+    </body>
 </html>
